@@ -1,4 +1,6 @@
 import { randomUUID } from 'crypto';
+import { ArgumentNotProvidedException } from '../exceptions';
+import { Guard } from '../guard';
 import { RequestContextService } from '@libs/application/context/AppRequestContext';
 
 type DomainEventMetadata = {
@@ -34,12 +36,19 @@ export abstract class DomainEvent {
   public readonly metadata: DomainEventMetadata;
 
   constructor(props: DomainEventProps<unknown>) {
+    if (Guard.isEmpty(props)) {
+      throw new ArgumentNotProvidedException(
+        'DomainEvent props should not be empty',
+      );
+    }
     this.id = randomUUID();
     this.aggregateId = props.aggregateId;
     this.metadata = {
       correlationId:
-        props?.metadata?.causationId || RequestContextService.getRequestId(),
-      causationId: props?.metadata?.timestamp,
+        props?.metadata?.correlationId || RequestContextService.getRequestId(),
+      causationId: props?.metadata?.causationId,
+      timestamp: props?.metadata?.timestamp || Date.now(),
+      userId: props?.metadata?.userId,
     };
   }
 }
