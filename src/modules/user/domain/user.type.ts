@@ -1,4 +1,4 @@
-import { Address } from './domain/value-objects/address.value-object';
+import { Address } from './value-objects/address.value-object';
 
 export interface UserProps {
   role: UserRoles;

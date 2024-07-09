@@ -6,6 +6,8 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { RequestContextModule } from 'nestjs-request-context';
 import { SlonikModule } from 'nestjs-slonik';
 import { postgresConnectionUri } from './configs/database.config';
+import { UserModule } from './modules/user/user.module';
+import { CqrsModule } from '@nestjs/cqrs';
 
 const interceptors = [
   {
@@ -25,6 +27,10 @@ const interceptors = [
     SlonikModule.forRoot({
       connectionUri: postgresConnectionUri,
     }),
+    CqrsModule,
+
+    // Modules
+    UserModule,
   ],
   controllers: [],
   providers: [...interceptors],

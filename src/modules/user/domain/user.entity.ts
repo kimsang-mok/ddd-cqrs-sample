@@ -1,6 +1,6 @@
 import { AggregateID, AggregateRoot } from '@src/libs/ddd';
 import { randomUUID } from 'crypto';
-import { CreateUserProps, UserProps, UserRoles } from '../user.type';
+import { CreateUserProps, UserProps, UserRoles } from './user.type';
 import { UserCreatedDomainEvent } from './events/user-created.domain-event';
 
 export class UserEntity extends AggregateRoot<UserProps> {
