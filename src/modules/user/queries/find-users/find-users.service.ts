@@ -4,14 +4,16 @@ import { DatabasePool, sql } from 'slonik';
 import { FindUsersQuery } from './find-users.query';
 import { Ok, Result } from 'oxide.ts';
 import { Paginated } from '@src/libs/ddd';
-import { UserModel, userSchema } from '../../databases/user.repository';
+import { userSchema } from '../../databases/user.repository';
 import { UserMapper } from '../../user.mapper';
+import { UserEntity } from '../../domain/user.entity';
 
 @QueryHandler(FindUsersQuery)
 export class FindUsersService implements IQueryHandler {
   constructor(
     @InjectPool()
     private readonly pool: DatabasePool,
+    private userMapper: UserMapper,
   ) {}
 
   /**
@@ -22,7 +24,7 @@ export class FindUsersService implements IQueryHandler {
    */
   async execute(
     query: FindUsersQuery,
-  ): Promise<Result<Paginated<UserModel>, Error>> {
+  ): Promise<Result<Paginated<UserEntity>, Error>> {
     /**
      * Constructing a query with Slonik.
      * More info: https://contra.com/p/AqZWWoUB-writing-composable-sql-using-java-script
@@ -40,9 +42,13 @@ export class FindUsersService implements IQueryHandler {
 
     const records = await this.pool.query(statement);
 
+    const users = records.rows.map((user) => {
+      return this.userMapper.toDomain(user);
+    });
+
     return Ok(
       new Paginated({
-        data: records.rows,
+        data: users,
         count: records.rowCount,
         limit: query.limit,
         page: query.page,

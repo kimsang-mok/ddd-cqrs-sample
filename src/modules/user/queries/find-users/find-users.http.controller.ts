@@ -8,8 +8,8 @@ import { Paginated } from '@src/libs/ddd';
 import { PaginatedQueryRequestDto } from '@src/libs/api/paginated-query.request.dto';
 import { FindUsersQuery } from './find-users.query';
 import { Result } from 'oxide.ts';
-import { UserModel } from '../../databases/user.repository';
 import { ResponseBase } from '@src/libs/api/response.base';
+import { UserEntity } from '../../domain/user.entity';
 
 @Controller(routesV1.version)
 export class FindUserHttpController {
@@ -31,22 +31,24 @@ export class FindUserHttpController {
       page: queryParams?.page,
     });
     const result: Result<
-      Paginated<UserModel>,
+      Paginated<UserEntity>,
       Error
     > = await this.queryBus.execute(query);
 
     const paginated = result.unwrap();
 
-    // whitelisting returned properties
     return new UserPaginatedResponseDto({
       ...paginated,
-      data: paginated.data.map((user) => ({
-        ...new ResponseBase(user),
-        email: user.email,
-        country: user.country,
-        street: user.street,
-        postalCode: user.postal_code,
-      })),
+      data: paginated.data.map((record) => {
+        const user = record.getProps();
+        return {
+          ...new ResponseBase(record),
+          email: user.email,
+          country: user.address.country,
+          street: user.address.street,
+          postalCode: user.address.postalCode,
+        };
+      }),
     });
   }
 }

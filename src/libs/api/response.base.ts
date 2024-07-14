@@ -17,22 +17,40 @@ export interface BaseResponseProps {
 export class ResponseBase extends IdResponse {
   constructor(props: BaseResponseProps) {
     super(props.id);
-    if (this.createdAt) {
-      this.createdAt = new Date(props.createdAt!).toISOString();
+    if (props.createdAt) {
+      this.createdAt = props.createdAt;
     } else {
-      this.createdAt = new Date(props.created_at!).toISOString();
+      this.createdAt = props.created_at!;
     }
 
-    if (this.updatedAt) {
-      this.updatedAt = new Date(props.updatedAt!).toISOString();
+    if (props.updatedAt) {
+      this.updatedAt = props.updatedAt;
     } else {
-      this.updatedAt = new Date(props.updated_at!).toISOString();
+      this.updatedAt = props.updated_at!;
+    }
+
+    if (props.createdAt) {
+      const createdAtDate = new Date(props.createdAt);
+      if (!isNaN(createdAtDate.getTime())) {
+        this.createdAt = createdAtDate.toISOString();
+      } else {
+        throw new RangeError('Invalid time value for createdAt');
+      }
+    }
+
+    if (props.updatedAt) {
+      const updatedAtDate = new Date(props.updatedAt);
+      if (!isNaN(updatedAtDate.getTime())) {
+        this.updatedAt = updatedAtDate.toISOString();
+      } else {
+        throw new RangeError('Invalid time value for updatedAt');
+      }
     }
   }
 
   @ApiProperty({ example: '2020-11-24T17:43:15.970Z' })
-  readonly createdAt: string;
+  readonly createdAt: Date | string;
 
   @ApiProperty({ example: '2020-11-24T17:43:15.970Z' })
-  readonly updatedAt: string;
+  readonly updatedAt: Date | string;
 }
