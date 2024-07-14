@@ -2,6 +2,7 @@ import { AggregateID, AggregateRoot } from '@src/libs/ddd';
 import { randomUUID } from 'crypto';
 import { CreateUserProps, UserProps, UserRoles } from './user.type';
 import { UserCreatedDomainEvent } from './events/user-created.domain-event';
+import { UserDeletedDomainEvent } from './events/user-deleted.domain-event';
 
 export class UserEntity extends AggregateRoot<UserProps> {
   protected readonly _id: AggregateID;
@@ -36,6 +37,10 @@ export class UserEntity extends AggregateRoot<UserProps> {
 
   makeModerator(): void {
     this.changeRole(UserRoles.moderator);
+  }
+
+  delete(): void {
+    this.addEvent(new UserDeletedDomainEvent({ aggregateId: this.id }));
   }
 
   validate(): void {

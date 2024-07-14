@@ -5,10 +5,12 @@ import { CreateUserService } from './commands/create-user/create-user.service';
 import { UserMapper } from './user.mapper';
 import { CqrsModule } from '@nestjs/cqrs';
 import { USER_REPOSITORY } from './user.di-tokens';
+import { DeleteUserService } from './commands/delete-user/delete-user.service';
+import { DeleteUserHttpController } from './commands/delete-user/delete-user.http-controller';
 
-const httpControllers = [CreateUserHttpController];
+const httpControllers = [CreateUserHttpController, DeleteUserHttpController];
 
-const commandHandlers: Provider[] = [CreateUserService];
+const commandHandlers: Provider[] = [CreateUserService, DeleteUserService];
 
 const queryHandlers: Provider[] = [];
 
