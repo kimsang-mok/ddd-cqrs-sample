@@ -3,8 +3,10 @@ import { IdResponse } from './id.response.dto';
 
 export interface BaseResponseProps {
   id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
+  created_at?: Date;
+  updated_at?: Date;
 }
 
 /**
@@ -15,8 +17,17 @@ export interface BaseResponseProps {
 export class ResponseBase extends IdResponse {
   constructor(props: BaseResponseProps) {
     super(props.id);
-    this.createdAt = new Date(props.createdAt).toISOString();
-    this.updatedAt = new Date(props.updatedAt).toISOString();
+    if (this.createdAt) {
+      this.createdAt = new Date(props.createdAt!).toISOString();
+    } else {
+      this.createdAt = new Date(props.created_at!).toISOString();
+    }
+
+    if (this.updatedAt) {
+      this.updatedAt = new Date(props.updatedAt!).toISOString();
+    } else {
+      this.updatedAt = new Date(props.updated_at!).toISOString();
+    }
   }
 
   @ApiProperty({ example: '2020-11-24T17:43:15.970Z' })

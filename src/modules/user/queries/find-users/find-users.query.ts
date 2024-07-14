@@ -7,7 +7,7 @@ export class FindUsersQuery extends PaginatedQueryBase {
 
   readonly street?: string;
 
-  constructor(props: PaginatedParams<FindUserQuery>) {
+  constructor(props: PaginatedParams<FindUsersQuery>) {
     super(props);
     this.country = props.country;
     this.postalCode = props.postalCode;

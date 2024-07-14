@@ -7,12 +7,18 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { USER_REPOSITORY } from './user.di-tokens';
 import { DeleteUserService } from './commands/delete-user/delete-user.service';
 import { DeleteUserHttpController } from './commands/delete-user/delete-user.http-controller';
+import { FindUserHttpController } from './queries/find-users/find-users.http.controller';
+import { FindUsersService } from './queries/find-users/find-users.service';
 
-const httpControllers = [CreateUserHttpController, DeleteUserHttpController];
+const httpControllers = [
+  CreateUserHttpController,
+  DeleteUserHttpController,
+  FindUserHttpController,
+];
 
 const commandHandlers: Provider[] = [CreateUserService, DeleteUserService];
 
-const queryHandlers: Provider[] = [];
+const queryHandlers: Provider[] = [FindUsersService];
 
 const mappers: Provider[] = [UserMapper];
 
@@ -27,7 +33,7 @@ const repositories: Provider[] = [
     Logger,
     ...repositories,
     ...commandHandlers,
-    // ...queryHandlers,
+    ...queryHandlers,
     ...mappers,
   ],
 })
